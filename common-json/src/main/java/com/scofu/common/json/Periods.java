@@ -1,5 +1,7 @@
 package com.scofu.common.json;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.regex.Pattern;
 
 /**
@@ -18,6 +20,7 @@ public class Periods {
    * @param string the string
    */
   public static String escape(String string) {
+    checkNotNull(string, "string");
     return string.replaceAll("\\.", PeriodEscapedString.ESCAPED_PERIOD);
   }
 
@@ -29,6 +32,7 @@ public class Periods {
    * @param string the string
    */
   public static String unescape(String string) {
+    checkNotNull(string, "string");
     return string.replaceAll(Pattern.quote(PeriodEscapedString.ESCAPED_PERIOD), ".");
   }
 

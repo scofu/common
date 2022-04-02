@@ -1,5 +1,7 @@
 package com.scofu.common.json;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.inject.internal.MoreTypes;
 import java.lang.reflect.Type;
 import java.util.Optional;
@@ -20,6 +22,7 @@ public class LoadingTypeCache implements TypeCache {
 
   @Override
   public Optional<Type> asType(String string) {
+    checkNotNull(string, "string");
     try {
       return Optional.of(Class.forName(string));
     } catch (ClassNotFoundException e) {
@@ -28,7 +31,8 @@ public class LoadingTypeCache implements TypeCache {
   }
 
   @Override
-  public String asString(Type typeLiteral) {
-    return MoreTypes.getRawType(typeLiteral).getName();
+  public String asString(Type type) {
+    checkNotNull(type, "type");
+    return MoreTypes.getRawType(type).getName();
   }
 }

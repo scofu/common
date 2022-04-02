@@ -17,5 +17,5 @@ public interface TypeCache {
 
   Optional<Type> asType(String string);
 
-  String asString(Type typeLiteral);
+  String asString(Type type);
 }

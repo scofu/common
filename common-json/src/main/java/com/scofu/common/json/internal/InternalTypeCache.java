@@ -1,5 +1,7 @@
 package com.scofu.common.json.internal;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -21,12 +23,14 @@ final class InternalTypeCache implements TypeCache {
 
   @Override
   public Optional<Type> asType(String string) {
+    checkNotNull(string, "string");
     return Optional.ofNullable(types.get(string));
   }
 
   @Override
-  public String asString(Type typeLiteral) {
-    return types.inverse().computeIfAbsent(typeLiteral, this::toString);
+  public String asString(Type type) {
+    checkNotNull(type, "type");
+    return types.inverse().computeIfAbsent(type, this::toString);
   }
 
   @Override

@@ -1,5 +1,7 @@
 package com.scofu.common.inject;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.scofu.common.inject.internal.InternalFeatureSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -15,6 +17,7 @@ public interface FeatureSet extends Iterable<Feature> {
    * @param features the features
    */
   static FeatureSet of(Set<Feature> features) {
+    checkNotNull(features, "features");
     return InternalFeatureSet.newInternalFeatureSet(features);
   }
 

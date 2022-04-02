@@ -1,5 +1,7 @@
 package com.scofu.common.json;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.inject.TypeLiteral;
 import com.scofu.common.json.internal.InternalDynamicReference;
 import java.lang.reflect.Type;
@@ -50,6 +52,7 @@ public interface DynamicReference<T> {
    */
   static <T> DynamicReference<T> dynamic(TypeCache typeCache, @Nullable Type type,
       @Nullable T value) {
+    checkNotNull(typeCache, "typeCache");
     return dynamic(type == null ? null : typeCache.asString(type), value);
   }
 

@@ -1,5 +1,7 @@
 package com.scofu.common.inject;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
@@ -23,6 +25,8 @@ public interface ListBinder<T> {
    * @param <T>         the type of the elements in the list
    */
   static <T> ListBinder<T> newListBinder(Binder binder, TypeLiteral<T> typeLiteral) {
+    checkNotNull(binder, "binder");
+    checkNotNull(typeLiteral, "typeLiteral");
     return InternalListBinder.newInternalListBinder(
         binder.skipSources(ListBinder.class), typeLiteral);
   }
@@ -37,6 +41,9 @@ public interface ListBinder<T> {
    */
   static <T> ListBinder<T> newListBinder(
       Binder binder, TypeLiteral<T> typeLiteral, Annotation annotation) {
+    checkNotNull(binder, "binder");
+    checkNotNull(typeLiteral, "typeLiteral");
+    checkNotNull(annotation, "annotation");
     return InternalListBinder.newInternalListBinder(
         binder.skipSources(ListBinder.class), typeLiteral, annotation);
   }
@@ -49,6 +56,8 @@ public interface ListBinder<T> {
    * @param <T>    the type of the elements in the list
    */
   static <T> ListBinder<T> newListBinder(Binder binder, Class<T> type) {
+    checkNotNull(binder, "binder");
+    checkNotNull(type, "type");
     return InternalListBinder.newInternalListBinder(
         binder.skipSources(ListBinder.class), TypeLiteral.get(type));
   }
@@ -62,6 +71,9 @@ public interface ListBinder<T> {
    * @param <T>        the type of the elements in the list
    */
   static <T> ListBinder<T> newListBinder(Binder binder, Class<T> type, Annotation annotation) {
+    checkNotNull(binder, "binder");
+    checkNotNull(type, "type");
+    checkNotNull(annotation, "annotation");
     return InternalListBinder.newInternalListBinder(
         binder.skipSources(ListBinder.class), TypeLiteral.get(type), annotation);
   }
