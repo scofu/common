@@ -6,15 +6,27 @@ plugins {
 
 apply<AppPlugin>()
 
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+    }
+    maven {
+        name = "scofu"
+        url = uri("https://repo.scofu.com/repository/maven-snapshots")
+        credentials(PasswordCredentials::class)
+    }
+}
+
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 }
 
 checkstyle {
-    toolVersion = "10.1"
+    toolVersion = "10.2-SNAPSHOT"
     config =
-            resources.text.fromUri(uri("https://raw.githubusercontent.com/checkstyle/checkstyle/master/src/main/resources/google_checks.xml"))
+        resources.text.fromUri(uri("https://raw.githubusercontent.com/checkstyle/checkstyle/master/src/main/resources/google_checks.xml"))
     println(configFile)
     maxWarnings = 0
 }
@@ -66,41 +78,43 @@ tasks {
                 attributes["Main-Class"] = app.mainClass.get()
             }
         }
-        val exclusions =
+        doFirst {
+            val exclusions =
                 if (app.skipExclusion.get()) {
                     emptyList<String>()
                 } else {
                     configurations.runtimeClasspath.get().resolvedConfiguration.resolvedArtifacts
-                            .filter { it.moduleVersion.id.group.startsWith("com.scofu") }
-                            .map { it.file.name }
+                        .filter { it.moduleVersion.id.group.startsWith("com.scofu") }
+                        .map { it.file.name }
                 }
-        when (app.shadow.get()) {
-            AppShadowing.FULL -> {
-                duplicatesStrategy = DuplicatesStrategy.WARN
+            when (app.shadow.get()) {
+                AppShadowing.FULL -> {
+                    duplicatesStrategy = DuplicatesStrategy.WARN
 
-                val filteredClasspath = configurations.runtimeClasspath.get()
+                    val filteredClasspath = configurations.runtimeClasspath.get()
                         .filter { !exclusions.contains(it.name) }
                         .map { if (it.isDirectory) it else if (it.exists()) zipTree(it) else it }
-                from(filteredClasspath)
-            }
-            AppShadowing.FIRST_LEVEL -> {
-                duplicatesStrategy = DuplicatesStrategy.WARN
+                    from(filteredClasspath)
+                }
+                AppShadowing.FIRST_LEVEL -> {
+                    duplicatesStrategy = DuplicatesStrategy.WARN
 
-                val firstLevelDependencies = configurations.compileClasspath.get().resolvedConfiguration.firstLevelModuleDependencies
+                    val firstLevelDependencies = configurations.compileClasspath.get().resolvedConfiguration.firstLevelModuleDependencies
                         .filter { !it.module.id.group.startsWith("com.scofu") }
                         .flatMap { it.allModuleArtifacts }
                         .map { it.file.name }
 
-                println("${project.name}-fld: ${firstLevelDependencies}")
+                    println("${project.name}-fld: ${firstLevelDependencies}")
 
-                val filteredClasspath = configurations.runtimeClasspath.get()
+                    val filteredClasspath = configurations.runtimeClasspath.get()
                         .filter { !exclusions.contains(it.name) }
                         .filter { firstLevelDependencies.contains(it.name) }
                         .map { if (it.isDirectory) it else if (it.exists()) zipTree(it) else it }
 
-                from(filteredClasspath)
+                    from(filteredClasspath)
+                }
+                else -> {}
             }
-            else -> {}
         }
     }
 }
