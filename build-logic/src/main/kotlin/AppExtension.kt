@@ -7,7 +7,8 @@ import org.gradle.kotlin.dsl.property
 open class AppExtension(project: Project, objects: ObjectFactory, layout: ProjectLayout) {
 
     val mainClass: Property<String> = objects.property<String>()
-    val shadow: Property<AppShadowing> = objects.property<AppShadowing>().convention(AppShadowing.NONE)
+    val shadow: Property<AppShadowing> =
+        objects.property<AppShadowing>().convention(AppShadowing.NONE)
     val skipExclusion: Property<Boolean> = objects.property<Boolean>().convention(false)
 
     fun shadowFirstLevel() {

@@ -69,7 +69,7 @@ tasks {
     }
 
     jar {
-        val app = project.the<AppExtension>();
+        val app = project.the<AppExtension>()
         if (app.mainClass.isPresent) {
             manifest {
                 attributes["Specification-Title"] = project.group
@@ -99,10 +99,11 @@ tasks {
                 AppShadowing.FIRST_LEVEL -> {
                     duplicatesStrategy = DuplicatesStrategy.WARN
 
-                    val firstLevelDependencies = configurations.compileClasspath.get().resolvedConfiguration.firstLevelModuleDependencies
-                        .filter { !it.module.id.group.startsWith("com.scofu") }
-                        .flatMap { it.allModuleArtifacts }
-                        .map { it.file.name }
+                    val firstLevelDependencies =
+                        configurations.compileClasspath.get().resolvedConfiguration.firstLevelModuleDependencies
+                            .filter { !it.module.id.group.startsWith("com.scofu") }
+                            .flatMap { it.allModuleArtifacts }
+                            .map { it.file.name }
 
                     println("${project.name}-fld: ${firstLevelDependencies}")
 
