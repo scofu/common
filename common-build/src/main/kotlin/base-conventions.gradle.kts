@@ -1,12 +1,12 @@
 import com.scofu.common.build.AppExtension
 import com.scofu.common.build.AppPlugin
 import com.scofu.common.build.AppShadowing
-import gradle.kotlin.dsl.accessors._8c04bfef49a388e648d7d2a4f7609b31.*
-import gradle.kotlin.dsl.accessors._8c04bfef49a388e648d7d2a4f7609b31.checkstyle
-import gradle.kotlin.dsl.accessors._8c04bfef49a388e648d7d2a4f7609b31.java
-import gradle.kotlin.dsl.accessors._8c04bfef49a388e648d7d2a4f7609b31.testImplementation
-import gradle.kotlin.dsl.accessors._8c04bfef49a388e648d7d2a4f7609b31.testRuntimeOnly
 import org.gradle.kotlin.dsl.*
+import kotlin.collections.emptyList
+import kotlin.collections.filter
+import kotlin.collections.flatMap
+import kotlin.collections.map
+import kotlin.collections.set
 
 plugins {
     `java-library`
@@ -110,7 +110,7 @@ tasks {
                     duplicatesStrategy = DuplicatesStrategy.WARN
 
                     val firstLevelDependencies =
-                        configurations.compileClasspath.get().resolvedConfiguration.firstLevelModuleDependencies
+                        configurations.runtimeClasspath.get().resolvedConfiguration.firstLevelModuleDependencies
                             .filter { !it.module.id.group.startsWith("com.scofu") }
                             .flatMap { it.allModuleArtifacts }
                             .map { it.file.name }
