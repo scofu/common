@@ -1,3 +1,13 @@
+import com.scofu.common.build.AppExtension
+import com.scofu.common.build.AppPlugin
+import com.scofu.common.build.AppShadowing
+import gradle.kotlin.dsl.accessors._8c04bfef49a388e648d7d2a4f7609b31.*
+import gradle.kotlin.dsl.accessors._8c04bfef49a388e648d7d2a4f7609b31.checkstyle
+import gradle.kotlin.dsl.accessors._8c04bfef49a388e648d7d2a4f7609b31.java
+import gradle.kotlin.dsl.accessors._8c04bfef49a388e648d7d2a4f7609b31.testImplementation
+import gradle.kotlin.dsl.accessors._8c04bfef49a388e648d7d2a4f7609b31.testRuntimeOnly
+import org.gradle.kotlin.dsl.*
+
 plugins {
     `java-library`
     `maven-publish`
@@ -69,7 +79,7 @@ tasks {
     }
 
     jar {
-        val app = project.the<AppExtension>()
+        val app = project.the<AppExtension>();
         if (app.mainClass.isPresent) {
             manifest {
                 attributes["Specification-Title"] = project.group

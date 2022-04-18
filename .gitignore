@@ -1,7 +1,8 @@
 /.gradle/
-/build-logic/.gradle/
+/common-build/build-logic/.gradle/
 /build/
 /*/build/
+/*/*/build/
 /*/out/
 /*/run/
 /.idea/

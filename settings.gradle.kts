@@ -1,5 +1,5 @@
 pluginManagement {
-    includeBuild("build-logic")
+    includeBuild("common-build/build-logic")
     repositories {
         gradlePluginPortal()
         maven("https://papermc.io/repo/repository/maven-public/")
@@ -27,6 +27,7 @@ dependencyResolutionManagement {
 rootProject.name = "common-parent"
 
 sequenceOf(
+    "common-build",
     "common-api",
     "common-inject",
     "common-json"

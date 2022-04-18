@@ -6,12 +6,11 @@ repositories {
     gradlePluginPortal()
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/")
-}
-
-dependencies {
-    implementation("io.papermc.paperweight.userdev:io.papermc.paperweight.userdev.gradle.plugin:1.3.5")
-    implementation("xyz.jpenilla:run-paper:1.0.6")
-    implementation("net.minecrell.plugin-yml.bukkit:net.minecrell.plugin-yml.bukkit.gradle.plugin:0.5.1")
+    maven {
+        name = "scofu"
+        url = uri("https://repo.scofu.com/repository/maven-snapshots")
+        credentials(PasswordCredentials::class)
+    }
 }
 
 tasks {

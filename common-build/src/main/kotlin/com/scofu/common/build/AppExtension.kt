@@ -1,3 +1,5 @@
+package com.scofu.common.build
+
 import org.gradle.api.Project
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
