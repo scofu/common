@@ -16,7 +16,7 @@ plugins {
 }
 
 dependencies {
-    paperDevBundle("1.18.1-R0.1-SNAPSHOT")
+    paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 }
 
 val app = the<AppExtension>()
