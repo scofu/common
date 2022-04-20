@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.inject.Inject;
 import com.google.inject.Stage;
+import com.jsoniter.annotation.JsonProperty;
 import com.scofu.app.Service;
 import com.scofu.app.bootstrap.BootstrapModule;
 import com.scofu.common.json.lazy.Lazy;
@@ -106,6 +107,19 @@ public class LazyTest extends Service {
 
     final var foo = lazyFactory.create(Foo.class, Foo::thing, "bar");
     assertEquals("bar", foo.thing());
+  }
+
+  @Test
+  public void testJsonPropertyGetter() {
+    interface MyJson extends Lazy {
+
+      @JsonProperty("_id")
+      String id();
+    }
+
+    final var myJson = lazyFactory.create(MyJson.class, MyJson::id, "test");
+    assertEquals("test", myJson.id());
+    assertEquals("{\"_id\":\"test\"}", myJson.toString());
   }
 
   @Test
