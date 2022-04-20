@@ -12,6 +12,7 @@ import com.scofu.app.bootstrap.BootstrapModule;
 import com.scofu.common.json.lazy.Lazy;
 import com.scofu.common.json.lazy.LazyFactory;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -86,6 +87,50 @@ public class LazyTest extends Service {
     final var user = lazyFactory.create(PublicUser.class);
     user.setName("nAmE");
     assertEquals("Name", user.fancyName());
+  }
+
+  @Test
+  public void testArguments() {
+    interface User extends Lazy {
+
+      Optional<String> name();
+
+      String password();
+
+      int coins();
+    }
+
+    final var user = lazyFactory.create(User.class, User::name, "Name", User::password, "Password",
+        User::coins, 1337);
+
+    assertEquals("Name", user.name().orElseThrow());
+    assertEquals("Password", user.password());
+    assertEquals(1337, user.coins());
+  }
+
+  @Test
+  public void testManyArguments() {
+    interface Numbers extends Lazy {
+
+      int one();
+
+      int two();
+
+      int three();
+
+      int four();
+
+      int five();
+    }
+
+    final var numbers = lazyFactory.create(Numbers.class, Map.of(Numbers::one, 1, Numbers::two, 2,
+        Numbers::three, 3, Numbers::four, 4, Numbers::five, 5));
+
+    assertEquals(1, numbers.one());
+    assertEquals(2, numbers.two());
+    assertEquals(3, numbers.three());
+    assertEquals(4, numbers.four());
+    assertEquals(5, numbers.five());
   }
 
   /**
