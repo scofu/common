@@ -1,7 +1,6 @@
 package com.scofu.common.json.lazy;
 
 import static com.jsoniter.any.Any.rewrap;
-import static com.jsoniter.any.Any.wrap;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static java.util.Optional.empty;
 
@@ -22,6 +21,7 @@ import java.math.BigInteger;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 final class InternalLazyFactory implements LazyFactory {
 
@@ -42,10 +42,27 @@ final class InternalLazyFactory implements LazyFactory {
   }
 
   @Override
-  public <T extends Lazy> T create(Class<T> type, Map<String, Object> defaults) {
+  public <T extends Lazy> T create(Class<T> type, Map<Function<T, ?>, Object> args) {
     final var any = rewrap(Maps.newLinkedHashMap());
-    for (var entry : defaults.entrySet()) {
-      any.asMap().put(entry.getKey(), wrap(entry.getValue()));
+    if (args.isEmpty()) {
+      return create(type, any);
+    }
+    try (final var recorder = MethodRecorder.record(type, args.keySet())) {
+      final var iterator = args.values().iterator();
+      for (var method : recorder.methods()) {
+        if (!iterator.hasNext()) {
+          throw new IllegalStateException(
+              String.format("Expected argument for method %s.", method));
+        }
+        final var arg = iterator.next();
+        bindings.computeIfAbsent(method, this::parseBinding).ifPresent(binding -> {
+          if (binding.type != Type.GETTER && binding.type != Type.OPTIONAL_GETTER) {
+            throw new IllegalStateException(
+                String.format("Expected getter but got %s for method %s.", binding.type, method));
+          }
+          any.asMap().put(binding.key, new ForwardingAny(arg, binding.typeLiteral));
+        });
+      }
     }
     return create(type, any);
   }
@@ -111,7 +128,30 @@ final class InternalLazyFactory implements LazyFactory {
 
   record Binding(String key, TypeLiteral<?> typeLiteral, Type type) {
 
-    public Object read(Any any) {
+    public Optional<?> invoke(Any any, Object[] args) {
+      switch (type) {
+        case GETTER -> {
+          return Optional.ofNullable(any.asMap().getOrDefault(key, Any.wrapNull()))
+              .map(this::read);
+        }
+        case OPTIONAL_GETTER -> {
+          return Optional.of(
+              Optional.ofNullable(any.asMap().getOrDefault(key, Any.wrapNull()))
+                  .map(this::read));
+        }
+        case SETTER -> {
+          if (args[0] == null) {
+            any.asMap().remove(key);
+            return Optional.empty();
+          }
+          any.asMap().put(key, new ForwardingAny(args[0], typeLiteral));
+          return Optional.empty();
+        }
+        default -> throw new UnsupportedOperationException();
+      }
+    }
+
+    private Object read(Any any) {
       final var rawType = MoreTypes.getRawType(typeLiteral.getType());
       if (boolean.class.isAssignableFrom(rawType)) {
         return any.valueType() == ValueType.BOOLEAN && any.toBoolean();
@@ -133,9 +173,7 @@ final class InternalLazyFactory implements LazyFactory {
     }
 
     enum Type {
-      GETTER,
-      OPTIONAL_GETTER,
-      SETTER
+      GETTER, OPTIONAL_GETTER, SETTER
     }
   }
 
@@ -155,8 +193,7 @@ final class InternalLazyFactory implements LazyFactory {
         return method.invoke(this, args);
       } else {
         return bindings.computeIfAbsent(method, InternalLazyFactory.this::parseBinding)
-            .flatMap(binding -> invokeBinding(binding, args))
-            .orElse(null);
+            .flatMap(binding -> binding.invoke(any, args)).orElse(null);
       }
     }
 
@@ -183,29 +220,6 @@ final class InternalLazyFactory implements LazyFactory {
     @Override
     public String toString() {
       return json.toString(Any.class, any);
-    }
-
-    private Optional<?> invokeBinding(Binding binding, Object[] args) {
-      switch (binding.type) {
-        case GETTER -> {
-          return Optional.ofNullable(any.asMap().getOrDefault(binding.key, Any.wrapNull()))
-              .map(binding::read);
-        }
-        case OPTIONAL_GETTER -> {
-          return Optional.of(
-              Optional.ofNullable(any.asMap().getOrDefault(binding.key, Any.wrapNull()))
-                  .map(binding::read));
-        }
-        case SETTER -> {
-          if (args[0] == null) {
-            any.asMap().remove(binding.key);
-            return Optional.empty();
-          }
-          any.asMap().put(binding.key, new ForwardingAny(args[0], binding.typeLiteral));
-          return Optional.empty();
-        }
-        default -> throw new UnsupportedOperationException();
-      }
     }
   }
 }
