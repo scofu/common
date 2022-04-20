@@ -75,7 +75,7 @@ final class InternalLazyFactory implements LazyFactory {
   private Optional<Binding> parseBinding(Method method) {
     if (Void.TYPE.isAssignableFrom(method.getReturnType())) {
       if (method.getParameterCount() == 1) {
-        final var key = parseKey(method, "setIs").or(() -> parseKey(method, "set"))
+        final var key = parsePrefixedKey(method, "setIs").or(() -> parsePrefixedKey(method, "set"))
             .orElseGet(method::getName);
         return Optional.of(
             new Binding(key, TypeLiteral.create(method.getGenericParameterTypes()[0]),
@@ -86,37 +86,55 @@ final class InternalLazyFactory implements LazyFactory {
     if (method.getParameterCount() != 0) {
       return empty();
     }
-    return parseKey(method, "increment")
-        .map(key -> new Binding(key, TypeLiteral.create(method.getGenericReturnType()),
-            Type.INCREMENTER)).or(() -> parseKey(method, "decrement")
-            .map(key -> new Binding(key, TypeLiteral.create(method.getGenericReturnType()),
-                Type.DECREMENTER)))
-        .or(() -> {
-          final var key = parseKey(method, "get").or(() -> parseKey(method, "is"))
-              .orElseGet(method::getName);
-          if (Optional.class.isAssignableFrom(method.getReturnType())) {
-            final var type =
-                method.getGenericReturnType() instanceof ParameterizedType parameterizedType
-                    ? parameterizedType.getActualTypeArguments()[0] : method.getGenericReturnType();
-            return Optional.of(new Binding(key, TypeLiteral.create(type), Type.OPTIONAL_GETTER));
-          }
-          return Optional.of(
-              new Binding(key, TypeLiteral.create(method.getGenericReturnType()), Type.GETTER));
-        });
+    return parseIncrementer(method)
+        .or(() -> parseDecrementer(method))
+        .or(() -> parseOptionalGetter(method));
   }
 
-  private Optional<String> parseKey(Method method, String prefix) {
-    final var annotation = method.getAnnotation(JsonProperty.class);
-    if (annotation != null) {
-      return Optional.of(annotation.value());
+  private Optional<Binding> parseIncrementer(Method method) {
+    return parsePrefixedKey(method, "increment")
+        .map(key -> new Binding(key, TypeLiteral.create(method.getGenericReturnType()),
+            Type.INCREMENTER));
+  }
+
+  private Optional<Binding> parseDecrementer(Method method) {
+    return parsePrefixedKey(method, "decrement")
+        .map(key -> new Binding(key, TypeLiteral.create(method.getGenericReturnType()),
+            Type.DECREMENTER));
+  }
+
+  private Optional<Binding> parseOptionalGetter(Method method) {
+    return parsePrefixedKey(method, "get")
+        .or(() -> parsePrefixedKey(method, "is"))
+        .or(() -> parseKey(method))
+        .map(key -> parseOptionalGetter(method, key));
+  }
+
+  private Binding parseOptionalGetter(Method method, String key) {
+    if (Optional.class.isAssignableFrom(method.getReturnType())) {
+      final var type =
+          method.getGenericReturnType() instanceof ParameterizedType parameterizedType
+              ? parameterizedType.getActualTypeArguments()[0] : method.getGenericReturnType();
+      return new Binding(key, TypeLiteral.create(type), Type.OPTIONAL_GETTER);
     }
+    return new Binding(key, TypeLiteral.create(method.getGenericReturnType()), Type.GETTER);
+  }
+
+  private Optional<String> parseKey(Method method) {
+    return Optional.ofNullable(method.getAnnotation(JsonProperty.class))
+        .map(JsonProperty::value)
+        .or(() -> Optional.of(method.getName()));
+  }
+
+  private Optional<String> parsePrefixedKey(Method method, String prefix) {
+    final var name = parseKey(method).orElseThrow();
     // ...
-    if (!method.getName().startsWith(prefix)) {
+    if (!name.startsWith(prefix)) {
       return empty();
     }
-    if (method.getName().length() == prefix.length() + 1) {
+    if (name.length() == prefix.length() + 1) {
       // set<...>
-      final var character = method.getName().substring(prefix.length()).charAt(0);
+      final var character = name.substring(prefix.length()).charAt(0);
       if (!Character.isUpperCase(character)) {
         // seta
         // a
@@ -129,9 +147,9 @@ final class InternalLazyFactory implements LazyFactory {
     }
     // setAnimal
     // nimal
-    final var substring = method.getName().substring(prefix.length() + 1);
+    final var substring = name.substring(prefix.length() + 1);
     // a + nimal
-    return Optional.of(Character.toLowerCase(method.getName().charAt(prefix.length())) + substring);
+    return Optional.of(Character.toLowerCase(name.charAt(prefix.length())) + substring);
   }
 
   record Binding(String key, TypeLiteral<?> typeLiteral, Type type) {
@@ -139,13 +157,11 @@ final class InternalLazyFactory implements LazyFactory {
     public Optional<?> invoke(Any any, Object[] args) {
       switch (type) {
         case GETTER -> {
-          return Optional.ofNullable(any.asMap().getOrDefault(key, Any.wrapNull()))
-              .map(this::read);
+          return Optional.ofNullable(any.asMap().getOrDefault(key, Any.wrapNull())).map(this::read);
         }
         case OPTIONAL_GETTER -> {
           return Optional.of(
-              Optional.ofNullable(any.asMap().getOrDefault(key, Any.wrapNull()))
-                  .map(this::read));
+              Optional.ofNullable(any.asMap().getOrDefault(key, Any.wrapNull())).map(this::read));
         }
         case SETTER -> {
           if (args[0] == null) {
@@ -162,14 +178,11 @@ final class InternalLazyFactory implements LazyFactory {
           if (int.class.isAssignableFrom(rawType)) {
             value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toInt() + 1 : 1;
           } else if (long.class.isAssignableFrom(rawType)) {
-            value =
-                valueAny.valueType() == ValueType.NUMBER ? valueAny.toLong() + 1L : 1L;
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toLong() + 1L : 1L;
           } else if (float.class.isAssignableFrom(rawType)) {
-            value =
-                valueAny.valueType() == ValueType.NUMBER ? valueAny.toFloat() + 1F : 1F;
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toFloat() + 1F : 1F;
           } else if (double.class.isAssignableFrom(rawType)) {
-            value =
-                valueAny.valueType() == ValueType.NUMBER ? valueAny.toDouble() + 1D : 1D;
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toDouble() + 1D : 1D;
           } else if (BigInteger.class.isAssignableFrom(rawType)) {
             value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toBigInteger()
                 .add(BigInteger.ONE) : BigInteger.ONE;
@@ -189,14 +202,11 @@ final class InternalLazyFactory implements LazyFactory {
           if (int.class.isAssignableFrom(rawType)) {
             value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toInt() - 1 : -1;
           } else if (long.class.isAssignableFrom(rawType)) {
-            value =
-                valueAny.valueType() == ValueType.NUMBER ? valueAny.toLong() - 1L : -1L;
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toLong() - 1L : -1L;
           } else if (float.class.isAssignableFrom(rawType)) {
-            value =
-                valueAny.valueType() == ValueType.NUMBER ? valueAny.toFloat() - 1F : -1F;
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toFloat() - 1F : -1F;
           } else if (double.class.isAssignableFrom(rawType)) {
-            value =
-                valueAny.valueType() == ValueType.NUMBER ? valueAny.toDouble() - 1D : -1D;
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toDouble() - 1D : -1D;
           } else if (BigInteger.class.isAssignableFrom(rawType)) {
             value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toBigInteger()
                 .subtract(BigInteger.ONE) : BigInteger.valueOf(-1L);
