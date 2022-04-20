@@ -86,15 +86,23 @@ final class InternalLazyFactory implements LazyFactory {
     if (method.getParameterCount() != 0) {
       return empty();
     }
-    final var key = parseKey(method, "get").or(() -> parseKey(method, "is"))
-        .orElseGet(method::getName);
-    if (Optional.class.isAssignableFrom(method.getReturnType())) {
-      final var type = method.getGenericReturnType() instanceof ParameterizedType parameterizedType
-          ? parameterizedType.getActualTypeArguments()[0] : method.getGenericReturnType();
-      return Optional.of(new Binding(key, TypeLiteral.create(type), Type.OPTIONAL_GETTER));
-    }
-    return Optional.of(
-        new Binding(key, TypeLiteral.create(method.getGenericReturnType()), Type.GETTER));
+    return parseKey(method, "increment")
+        .map(key -> new Binding(key, TypeLiteral.create(method.getGenericReturnType()),
+            Type.INCREMENTER)).or(() -> parseKey(method, "decrement")
+            .map(key -> new Binding(key, TypeLiteral.create(method.getGenericReturnType()),
+                Type.DECREMENTER)))
+        .or(() -> {
+          final var key = parseKey(method, "get").or(() -> parseKey(method, "is"))
+              .orElseGet(method::getName);
+          if (Optional.class.isAssignableFrom(method.getReturnType())) {
+            final var type =
+                method.getGenericReturnType() instanceof ParameterizedType parameterizedType
+                    ? parameterizedType.getActualTypeArguments()[0] : method.getGenericReturnType();
+            return Optional.of(new Binding(key, TypeLiteral.create(type), Type.OPTIONAL_GETTER));
+          }
+          return Optional.of(
+              new Binding(key, TypeLiteral.create(method.getGenericReturnType()), Type.GETTER));
+        });
   }
 
   private Optional<String> parseKey(Method method, String prefix) {
@@ -147,6 +155,60 @@ final class InternalLazyFactory implements LazyFactory {
           any.asMap().put(key, new ForwardingAny(args[0], typeLiteral));
           return Optional.empty();
         }
+        case INCREMENTER -> {
+          final var rawType = MoreTypes.getRawType(typeLiteral.getType());
+          final var valueAny = any.asMap().getOrDefault(key, Any.wrapNull());
+          final Object value;
+          if (int.class.isAssignableFrom(rawType)) {
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toInt() + 1 : 1;
+          } else if (long.class.isAssignableFrom(rawType)) {
+            value =
+                valueAny.valueType() == ValueType.NUMBER ? valueAny.toLong() + 1L : 1L;
+          } else if (float.class.isAssignableFrom(rawType)) {
+            value =
+                valueAny.valueType() == ValueType.NUMBER ? valueAny.toFloat() + 1F : 1F;
+          } else if (double.class.isAssignableFrom(rawType)) {
+            value =
+                valueAny.valueType() == ValueType.NUMBER ? valueAny.toDouble() + 1D : 1D;
+          } else if (BigInteger.class.isAssignableFrom(rawType)) {
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toBigInteger()
+                .add(BigInteger.ONE) : BigInteger.ONE;
+          } else if (BigDecimal.class.isAssignableFrom(rawType)) {
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toBigDecimal()
+                .add(BigDecimal.ONE) : BigDecimal.ONE;
+          } else {
+            throw new UnsupportedOperationException("Not a number: " + this);
+          }
+          any.asMap().put(key, new ForwardingAny(value, typeLiteral));
+          return Optional.of(value);
+        }
+        case DECREMENTER -> {
+          final var rawType = MoreTypes.getRawType(typeLiteral.getType());
+          final var valueAny = any.asMap().getOrDefault(key, Any.wrapNull());
+          final Object value;
+          if (int.class.isAssignableFrom(rawType)) {
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toInt() - 1 : -1;
+          } else if (long.class.isAssignableFrom(rawType)) {
+            value =
+                valueAny.valueType() == ValueType.NUMBER ? valueAny.toLong() - 1L : -1L;
+          } else if (float.class.isAssignableFrom(rawType)) {
+            value =
+                valueAny.valueType() == ValueType.NUMBER ? valueAny.toFloat() - 1F : -1F;
+          } else if (double.class.isAssignableFrom(rawType)) {
+            value =
+                valueAny.valueType() == ValueType.NUMBER ? valueAny.toDouble() - 1D : -1D;
+          } else if (BigInteger.class.isAssignableFrom(rawType)) {
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toBigInteger()
+                .subtract(BigInteger.ONE) : BigInteger.valueOf(-1L);
+          } else if (BigDecimal.class.isAssignableFrom(rawType)) {
+            value = valueAny.valueType() == ValueType.NUMBER ? valueAny.toBigDecimal()
+                .subtract(BigDecimal.ONE) : BigDecimal.valueOf(-1L);
+          } else {
+            throw new UnsupportedOperationException("Not a number: " + this);
+          }
+          any.asMap().put(key, new ForwardingAny(value, typeLiteral));
+          return Optional.of(value);
+        }
         default -> throw new UnsupportedOperationException();
       }
     }
@@ -173,7 +235,7 @@ final class InternalLazyFactory implements LazyFactory {
     }
 
     enum Type {
-      GETTER, OPTIONAL_GETTER, SETTER
+      GETTER, OPTIONAL_GETTER, SETTER, INCREMENTER, DECREMENTER;
     }
   }
 

@@ -90,6 +90,32 @@ public class LazyTest extends Service {
   }
 
   @Test
+  public void testIncrementAndDecrement() {
+    interface Stats extends Lazy {
+
+      int points();
+
+      int incrementPoints();
+
+      int decrementPoints();
+    }
+
+    final var stats = lazyFactory.create(Stats.class);
+
+    assertEquals(0, stats.points());
+
+    stats.incrementPoints();
+
+    assertEquals(1, stats.points());
+    assertEquals(2, stats.incrementPoints());
+
+    stats.decrementPoints();
+
+    assertEquals(1, stats.points());
+    assertEquals(0, stats.decrementPoints());
+  }
+
+  @Test
   public void testArguments() {
     interface User extends Lazy {
 
