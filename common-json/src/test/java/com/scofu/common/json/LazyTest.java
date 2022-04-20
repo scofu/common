@@ -90,6 +90,25 @@ public class LazyTest extends Service {
   }
 
   @Test
+  public void testGenericGetter() {
+    interface Generic<T> {
+
+      T thing();
+    }
+
+    interface GenericString extends Generic<String> {
+
+      @Override
+      String thing();
+    }
+
+    interface Foo extends Lazy, GenericString {}
+
+    final var foo = lazyFactory.create(Foo.class, Foo::thing, "bar");
+    assertEquals("bar", foo.thing());
+  }
+
+  @Test
   public void testIncrementAndDecrement() {
     interface Stats extends Lazy {
 
