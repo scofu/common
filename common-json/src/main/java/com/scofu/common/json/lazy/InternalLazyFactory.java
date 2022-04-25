@@ -1,5 +1,6 @@
 package com.scofu.common.json.lazy;
 
+import static com.google.common.base.Defaults.defaultValue;
 import static com.jsoniter.any.Any.rewrap;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static java.util.Optional.empty;
@@ -154,14 +155,16 @@ final class InternalLazyFactory implements LazyFactory {
 
   record Binding(String key, TypeLiteral<?> typeLiteral, Type type) {
 
-    public Optional<?> invoke(Any any, Object[] args) {
+    public Optional<Object> invoke(Any any, Object[] args) {
       switch (type) {
         case GETTER -> {
-          return Optional.ofNullable(any.asMap().getOrDefault(key, Any.wrapNull())).map(this::read);
+          return Optional.ofNullable(any.asMap().get(key))
+              .map(serialized -> read(serialized, any, key));
         }
         case OPTIONAL_GETTER -> {
           return Optional.of(
-              Optional.ofNullable(any.asMap().getOrDefault(key, Any.wrapNull())).map(this::read));
+              Optional.ofNullable(any.asMap().get(key))
+                  .map(serialized -> read(serialized, any, key)));
         }
         case SETTER -> {
           if (args[0] == null) {
@@ -223,25 +226,13 @@ final class InternalLazyFactory implements LazyFactory {
       }
     }
 
-    private Object read(Any any) {
-      final var rawType = MoreTypes.getRawType(typeLiteral.getType());
-      if (boolean.class.isAssignableFrom(rawType)) {
-        return any.valueType() == ValueType.BOOLEAN && any.toBoolean();
-      } else if (int.class.isAssignableFrom(rawType)) {
-        return any.valueType() == ValueType.NUMBER ? any.toInt() : 0;
-      } else if (long.class.isAssignableFrom(rawType)) {
-        return any.valueType() == ValueType.NUMBER ? any.toLong() : 0L;
-      } else if (float.class.isAssignableFrom(rawType)) {
-        return any.valueType() == ValueType.NUMBER ? any.toFloat() : 0F;
-      } else if (double.class.isAssignableFrom(rawType)) {
-        return any.valueType() == ValueType.NUMBER ? any.toDouble() : 0D;
-      } else if (BigInteger.class.isAssignableFrom(rawType)) {
-        return any.valueType() == ValueType.NUMBER ? any.toBigInteger() : BigInteger.ZERO;
-      } else if (BigDecimal.class.isAssignableFrom(rawType)) {
-        return any.valueType() == ValueType.NUMBER ? any.toBigDecimal() : BigDecimal.ZERO;
-      } else {
-        return any.as(typeLiteral);
+    private Object read(Any any, Any parent, String key) {
+      if (any instanceof ForwardingAny forwardingAny) {
+        return forwardingAny.object();
       }
+      final var deserialized = any.as(typeLiteral);
+      parent.asMap().put(key, new ForwardingAny(deserialized, typeLiteral));
+      return deserialized;
     }
 
     enum Type {
@@ -265,7 +256,8 @@ final class InternalLazyFactory implements LazyFactory {
         return method.invoke(this, args);
       } else {
         return bindings.computeIfAbsent(method, InternalLazyFactory.this::parseBinding)
-            .flatMap(binding -> binding.invoke(any, args)).orElse(null);
+            .flatMap(binding -> binding.invoke(any, args))
+            .orElseGet(() -> defaultValue(method.getReturnType()));
       }
     }
 
