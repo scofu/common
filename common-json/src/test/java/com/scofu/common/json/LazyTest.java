@@ -84,6 +84,27 @@ public class LazyTest extends Service {
   }
 
   @Test
+  public void testNestedLazy() {
+    interface Nested extends Lazy {
+
+      String string();
+    }
+
+    interface Thing extends Lazy {
+
+      Nested nested();
+    }
+
+    final var thing = lazyFactory.create(Thing.class, Thing::nested,
+        lazyFactory.create(Nested.class, Nested::string, "nested"));
+    assertEquals("nested", thing.nested().string());
+    final var copyOfThing = json.fromString(Thing.class, json.toString(Thing.class, thing));
+    assertEquals(thing, copyOfThing);
+    assertEquals("nested", copyOfThing.nested().string());
+    assertEquals(thing.nested(), copyOfThing.nested());
+  }
+
+  @Test
   public void testDefaults() {
     final var user = lazyFactory.create(PublicUser.class);
     user.setName("nAmE");
