@@ -30,7 +30,8 @@ sequenceOf(
     "common-build",
     "common-api",
     "common-inject",
-    "common-json"
+    "common-json",
+    "egg"
 ).forEach {
     include(it)
     project(":$it").projectDir = file(it)
