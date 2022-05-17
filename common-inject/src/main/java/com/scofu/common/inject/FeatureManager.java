@@ -1,8 +1,6 @@
 package com.scofu.common.inject;
 
-/**
- * Manages bound features.
- */
+/** Manages bound features. */
 public interface FeatureManager {
 
   /**

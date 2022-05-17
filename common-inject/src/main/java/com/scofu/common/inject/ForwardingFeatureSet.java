@@ -3,14 +3,10 @@ package com.scofu.common.inject;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
-/**
- * Forwards a {@link FeatureSet}.
- */
+/** Forwards a {@link FeatureSet}. */
 public interface ForwardingFeatureSet extends FeatureSet {
 
-  /**
-   * Returns the bound features.
-   */
+  /** Returns the bound features. */
   FeatureSet features();
 
   @Override

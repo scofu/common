@@ -8,9 +8,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.binder.ScopedBindingBuilder;
 import com.scofu.common.inject.internal.InternalFeatureBinder;
 
-/**
- * Binds a set of features.
- */
+/** Binds a set of features. */
 public interface FeatureBinder {
 
   /**
@@ -35,7 +33,7 @@ public interface FeatureBinder {
    * Binds a feature manager.
    *
    * @param typeLiteral the type literal
-   * @param <T>         the type of the feature manager
+   * @param <T> the type of the feature manager
    */
   <T extends FeatureManager> ScopedBindingBuilder bindFeatureManager(TypeLiteral<T> typeLiteral);
 
@@ -43,7 +41,7 @@ public interface FeatureBinder {
    * Binds a feature manager.
    *
    * @param type the type
-   * @param <T>  the type of the feature manager
+   * @param <T> the type of the feature manager
    */
   <T extends FeatureManager> ScopedBindingBuilder bindFeatureManager(Class<T> type);
 
@@ -51,16 +49,16 @@ public interface FeatureBinder {
    * Binds a feature manager instance.
    *
    * @param featureManager the feature manager
-   * @param <T>            the type of the feature manager
+   * @param <T> the type of the feature manager
    */
   <T extends FeatureManager> void bindFeatureManagerInstance(T featureManager);
 
   /**
    * Binds a feature manager instance.
    *
-   * @param type           the type
+   * @param type the type
    * @param featureManager the feature manager
-   * @param <T>            the type of the feature manager
+   * @param <T> the type of the feature manager
    */
   <T extends FeatureManager> void bindFeatureManagerInstance(Class<T> type, T featureManager);
 
@@ -76,7 +74,7 @@ public interface FeatureBinder {
    * Binds a feature.
    *
    * @param typeLiteral the type literal
-   * @param <T>         the type of the feature
+   * @param <T> the type of the feature
    */
   <T extends Feature> ScopedBindingBuilder bindFeature(TypeLiteral<T> typeLiteral);
 
@@ -84,7 +82,7 @@ public interface FeatureBinder {
    * Binds a feature.
    *
    * @param type the type
-   * @param <T>  the type of the feature
+   * @param <T> the type of the feature
    */
   <T extends Feature> ScopedBindingBuilder bindFeature(Class<T> type);
 
@@ -92,16 +90,16 @@ public interface FeatureBinder {
    * Binds a feature instance.
    *
    * @param feature the feature
-   * @param <T>     the type of the feature
+   * @param <T> the type of the feature
    */
   <T extends Feature> void bindFeatureInstance(T feature);
 
   /**
    * Binds a feature instance.
    *
-   * @param type    the type
+   * @param type the type
    * @param feature the feature
-   * @param <T>     the type of the feature
+   * @param <T> the type of the feature
    */
   <T extends Feature> void bindFeatureInstance(Class<T> type, T feature);
 }

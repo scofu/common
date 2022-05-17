@@ -6,9 +6,7 @@ import com.scofu.common.inject.internal.InternalFeatureSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-/**
- * Represents a set of features.
- */
+/** Represents a set of features. */
 public interface FeatureSet extends Iterable<Feature> {
 
   /**
@@ -25,7 +23,7 @@ public interface FeatureSet extends Iterable<Feature> {
    * Returns a stream of features of the given type.
    *
    * @param type the type
-   * @param <T>  the type
+   * @param <T> the type
    */
   <T> Stream<T> streamWithType(Class<T> type);
 }

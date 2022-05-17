@@ -4,16 +4,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.inject.Binder;
 
-/**
- * An abstract implementation of a feature module.
- */
+/** An abstract implementation of a feature module. */
 public class AbstractFeatureModule implements FeatureModule {
 
   private Binder binder;
   private FeatureBinder featureBinder;
 
-  protected void configure() {
-  }
+  protected void configure() {}
 
   @Override
   public final void configure(Binder binder) {

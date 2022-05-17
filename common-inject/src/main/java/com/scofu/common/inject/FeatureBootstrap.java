@@ -3,9 +3,7 @@ package com.scofu.common.inject;
 import java.util.Set;
 import javax.inject.Inject;
 
-/**
- * Bootstraps bound feature managers.
- */
+/** Bootstraps bound feature managers. */
 public final class FeatureBootstrap implements Feature {
 
   private final Set<FeatureManager> managers;

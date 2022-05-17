@@ -4,14 +4,10 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.ScopedBindingBuilder;
 
-/**
- * Forwards a {@link FeatureBinder}.
- */
+/** Forwards a {@link FeatureBinder}. */
 public interface ForwardingFeatureBinder extends FeatureBinder {
 
-  /**
-   * Returns the forwarded feature binder.
-   */
+  /** Returns the forwarded feature binder. */
   FeatureBinder featureBinder();
 
   @Override

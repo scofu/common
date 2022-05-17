@@ -20,9 +20,9 @@ public interface ListBinder<T> {
   /**
    * Creates and returns a new list binder.
    *
-   * @param binder      the binder
+   * @param binder the binder
    * @param typeLiteral the type literal
-   * @param <T>         the type of the elements in the list
+   * @param <T> the type of the elements in the list
    */
   static <T> ListBinder<T> newListBinder(Binder binder, TypeLiteral<T> typeLiteral) {
     checkNotNull(binder, "binder");
@@ -34,10 +34,10 @@ public interface ListBinder<T> {
   /**
    * Creates and returns a new list binder.
    *
-   * @param binder      the binder
+   * @param binder the binder
    * @param typeLiteral the type literal
-   * @param annotation  the annotation
-   * @param <T>         the type of the elements in the list
+   * @param annotation the annotation
+   * @param <T> the type of the elements in the list
    */
   static <T> ListBinder<T> newListBinder(
       Binder binder, TypeLiteral<T> typeLiteral, Annotation annotation) {
@@ -52,8 +52,8 @@ public interface ListBinder<T> {
    * Creates and returns a new list binder.
    *
    * @param binder the binder
-   * @param type   the type
-   * @param <T>    the type of the elements in the list
+   * @param type the type
+   * @param <T> the type of the elements in the list
    */
   static <T> ListBinder<T> newListBinder(Binder binder, Class<T> type) {
     checkNotNull(binder, "binder");
@@ -65,10 +65,10 @@ public interface ListBinder<T> {
   /**
    * Creates and returns a new list binder.
    *
-   * @param binder     the binder
-   * @param type       the type
+   * @param binder the binder
+   * @param type the type
    * @param annotation the annotation
-   * @param <T>        the type of the elements in the list
+   * @param <T> the type of the elements in the list
    */
   static <T> ListBinder<T> newListBinder(Binder binder, Class<T> type, Annotation annotation) {
     checkNotNull(binder, "binder");
@@ -78,9 +78,7 @@ public interface ListBinder<T> {
         binder.skipSources(ListBinder.class), TypeLiteral.get(type), annotation);
   }
 
-  /**
-   * Adds a binding.
-   */
+  /** Adds a binding. */
   LinkedBindingBuilder<T> addBinding();
 
   /**
@@ -90,18 +88,12 @@ public interface ListBinder<T> {
    */
   LinkedBindingBuilder<T> insertBinding(Function<Integer, Integer> index);
 
-  /**
-   * Inserts a binding at the beginning of the list.
-   */
+  /** Inserts a binding at the beginning of the list. */
   LinkedBindingBuilder<T> insertFirstBinding();
 
-  /**
-   * Inserts a binding at the middle of the list.
-   */
+  /** Inserts a binding at the middle of the list. */
   LinkedBindingBuilder<T> insertMiddleBinding();
 
-  /**
-   * Inserts a binding at the end of the list.
-   */
+  /** Inserts a binding at the end of the list. */
   LinkedBindingBuilder<T> insertLastBinding();
 }

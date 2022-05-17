@@ -9,9 +9,7 @@ import com.scofu.common.inject.Feature;
 import com.scofu.common.inject.FeatureBinder;
 import com.scofu.common.inject.FeatureManager;
 
-/**
- * Internal feature binder.
- */
+/** Internal feature binder. */
 public final class InternalFeatureBinder implements FeatureBinder {
 
   private final Multibinder<Feature> featureMultibinder;

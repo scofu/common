@@ -6,9 +6,7 @@ import com.scofu.common.inject.FeatureSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-/**
- * Internal feature set.
- */
+/** Internal feature set. */
 public final class InternalFeatureSet extends ForwardingSet<Feature> implements FeatureSet {
 
   private final Set<Feature> delegate;

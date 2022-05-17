@@ -2,15 +2,12 @@ package com.scofu.common.inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * An abstract implementation of a feature manager.
- */
+/** An abstract implementation of a feature manager. */
 public class AbstractFeatureManager implements FeatureManager, ForwardingFeatureSet {
 
   private FeatureSet features;
 
-  protected void load() {
-  }
+  protected void load() {}
 
   @Override
   public final void load(FeatureSet features) {
@@ -34,11 +31,9 @@ public class AbstractFeatureManager implements FeatureManager, ForwardingFeature
     }
   }
 
-  protected void enable() {
-  }
+  protected void enable() {}
 
-  protected void disable() {
-  }
+  protected void disable() {}
 
   @Override
   public final void disable(FeatureSet features) {

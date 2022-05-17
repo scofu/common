@@ -24,14 +24,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import org.aopalliance.intercept.MethodInterceptor;
 
-/**
- * Forwards a {@link Binder}.
- */
+/** Forwards a {@link Binder}. */
 public interface ForwardingBinder extends Binder {
 
-  /**
-   * Returns the forwarded binder.
-   */
+  /** Returns the forwarded binder. */
   Binder binder();
 
   @Override
