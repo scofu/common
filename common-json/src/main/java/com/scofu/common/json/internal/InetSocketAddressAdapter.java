@@ -14,9 +14,13 @@ final class InetSocketAddressAdapter implements Adapter<InetSocketAddress> {
   @Override
   public void write(InetSocketAddress inetSocketAddress, JsonStream stream, Type type)
       throws IOException {
-    stream.writeVal(String.format("%s:%d", Optional.ofNullable(inetSocketAddress.getAddress())
-        .map(InetAddress::getHostAddress)
-        .orElseGet(inetSocketAddress::getHostName), inetSocketAddress.getPort()));
+    stream.writeVal(
+        String.format(
+            "%s:%d",
+            Optional.ofNullable(inetSocketAddress.getAddress())
+                .map(InetAddress::getHostAddress)
+                .orElseGet(inetSocketAddress::getHostName),
+            inetSocketAddress.getPort()));
   }
 
   @Override

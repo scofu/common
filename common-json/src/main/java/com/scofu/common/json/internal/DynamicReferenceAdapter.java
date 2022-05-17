@@ -30,8 +30,8 @@ final class DynamicReferenceAdapter implements Adapter<DynamicReference<?>> {
     if (reference.type() == null || reference.value() == null) {
       jsonStream.writeNull();
     } else {
-      jsonStream.writeVal(TypeLiteral.create(typeCache.asType(reference.type()).orElseThrow()),
-          reference.value());
+      jsonStream.writeVal(
+          TypeLiteral.create(typeCache.asType(reference.type()).orElseThrow()), reference.value());
     }
     jsonStream.writeObjectEnd();
   }

@@ -10,9 +10,7 @@ import com.scofu.common.json.Adapter;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-/**
- * Manages {@link Adapter} features.
- */
+/** Manages {@link Adapter} features. */
 @SuppressWarnings({"unchecked", "rawtypes", "UnstableApiUsage"})
 public final class AdapterManager extends AbstractFeatureManager {
 
@@ -39,34 +37,35 @@ public final class AdapterManager extends AbstractFeatureManager {
     System.out.println("binding " + adapter);
     final var typeArgument = adapter.typeArgument();
 
-    JsoniterSpi.registerExtension(new EmptyExtension() {
-      @Override
-      public Decoder createDecoder(String cacheKey, Type type) {
-        if (cacheKey.endsWith(".original")) {
-          return null;
-        }
-        if (!typeArgument.getRawType().isAssignableFrom(MoreTypes.getRawType(type))) {
-          return null;
-        }
-        return iterator -> adapter.read(iterator, type);
-      }
+    JsoniterSpi.registerExtension(
+        new EmptyExtension() {
+          @Override
+          public Decoder createDecoder(String cacheKey, Type type) {
+            if (cacheKey.endsWith(".original")) {
+              return null;
+            }
+            if (!typeArgument.getRawType().isAssignableFrom(MoreTypes.getRawType(type))) {
+              return null;
+            }
+            return iterator -> adapter.read(iterator, type);
+          }
 
-      @Override
-      public Encoder createEncoder(String cacheKey, Type type) {
-        if (cacheKey.endsWith(".original")) {
-          return null;
-        }
-        if (!typeArgument.getRawType().isAssignableFrom(MoreTypes.getRawType(type))) {
-          return null;
-        }
-        return (o, stream) -> adapter.write(o, stream, type);
-      }
-    });
-    NATIVE_DECODERS.put(typeArgument.getRawType(),
-        iter -> adapter.read(iter, typeArgument.getRawType()));
-    JsoniterSpi.registerMapKeyDecoder(typeArgument.getType(),
-        iterator -> adapter.read(iterator, typeArgument.getType()));
-    JsoniterSpi.registerMapKeyEncoder(typeArgument.getType(),
-        (o, stream) -> adapter.write(o, stream, typeArgument.getType()));
+          @Override
+          public Encoder createEncoder(String cacheKey, Type type) {
+            if (cacheKey.endsWith(".original")) {
+              return null;
+            }
+            if (!typeArgument.getRawType().isAssignableFrom(MoreTypes.getRawType(type))) {
+              return null;
+            }
+            return (o, stream) -> adapter.write(o, stream, type);
+          }
+        });
+    NATIVE_DECODERS.put(
+        typeArgument.getRawType(), iter -> adapter.read(iter, typeArgument.getRawType()));
+    JsoniterSpi.registerMapKeyDecoder(
+        typeArgument.getType(), iterator -> adapter.read(iterator, typeArgument.getType()));
+    JsoniterSpi.registerMapKeyEncoder(
+        typeArgument.getType(), (o, stream) -> adapter.write(o, stream, typeArgument.getType()));
   }
 }

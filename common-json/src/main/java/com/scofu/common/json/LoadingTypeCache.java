@@ -6,16 +6,12 @@ import com.google.inject.internal.MoreTypes;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-/**
- * A type cache implementation that loads types using {@link Class#forName(String)}.
- */
+/** A type cache implementation that loads types using {@link Class#forName(String)}. */
 public class LoadingTypeCache implements TypeCache {
 
   private static final LoadingTypeCache INSTANCE = new LoadingTypeCache();
 
-  /**
-   * Returns the instance.
-   */
+  /** Returns the instance. */
   public static LoadingTypeCache instance() {
     return INSTANCE;
   }

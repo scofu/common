@@ -5,9 +5,7 @@ import com.scofu.common.inject.annotation.Module;
 import com.scofu.common.json.internal.InternalJsonModule;
 import com.scofu.common.json.lazy.LazyJsonModule;
 
-/**
- * Json module. Binds common adapters.
- */
+/** Json module. Binds common adapters. */
 @Module
 public class JsonModule extends AbstractFeatureModule {
 

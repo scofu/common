@@ -3,9 +3,7 @@ package com.scofu.common.json.lazy;
 import com.google.inject.Scopes;
 import com.scofu.common.inject.AbstractFeatureModule;
 
-/**
- * Lazy json module.
- */
+/** Lazy json module. */
 public class LazyJsonModule extends AbstractFeatureModule {
 
   @Override

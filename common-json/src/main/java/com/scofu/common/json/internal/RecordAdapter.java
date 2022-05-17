@@ -70,8 +70,8 @@ final class RecordAdapter implements Adapter<Record> {
     }
   }
 
-  private boolean writeRecordComponent(Record record, JsonStream jsonStream, boolean needsMore,
-      RecordComponent recordComponent)
+  private boolean writeRecordComponent(
+      Record record, JsonStream jsonStream, boolean needsMore, RecordComponent recordComponent)
       throws IllegalAccessException, InvocationTargetException, IOException {
     final var accessor = recordComponent.getAccessor();
     accessor.setAccessible(true);
@@ -82,9 +82,10 @@ final class RecordAdapter implements Adapter<Record> {
     if (needsMore) {
       jsonStream.writeMore();
     }
-    final var key = Optional.ofNullable(accessor.getAnnotation(JsonProperty.class))
-        .map(JsonProperty::value)
-        .orElseGet(recordComponent::getName);
+    final var key =
+        Optional.ofNullable(accessor.getAnnotation(JsonProperty.class))
+            .map(JsonProperty::value)
+            .orElseGet(recordComponent::getName);
     jsonStream.writeObjectField(key);
     jsonStream.writeVal(recordComponent.getGenericType(), object);
     return true;

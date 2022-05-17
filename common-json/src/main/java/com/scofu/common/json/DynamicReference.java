@@ -23,9 +23,9 @@ public interface DynamicReference<T> {
   /**
    * Creates and returns a dynamic reference from the given type and value.
    *
-   * @param type  the type
+   * @param type the type
    * @param value the value
-   * @param <T>   the type of the value
+   * @param <T> the type of the value
    */
   static <T> DynamicReference<T> dynamic(@Nullable String type, @Nullable T value) {
     return InternalDynamicReference.newInternalDynamicReference(type, value);
@@ -35,8 +35,8 @@ public interface DynamicReference<T> {
    * Creates and returns a dynamic reference with the given type cache and value.
    *
    * @param typeCache the type cache
-   * @param value     the value
-   * @param <T>       the type of the value
+   * @param value the value
+   * @param <T> the type of the value
    */
   static <T> DynamicReference<T> dynamic(TypeCache typeCache, @Nullable T value) {
     return dynamic(typeCache, value == null ? null : value.getClass(), value);
@@ -46,12 +46,12 @@ public interface DynamicReference<T> {
    * Creates and returns a dynamic reference with the given type cache, type and value.
    *
    * @param typeCache the type cache
-   * @param type      the type
-   * @param value     the value
-   * @param <T>       the type of the value
+   * @param type the type
+   * @param value the value
+   * @param <T> the type of the value
    */
-  static <T> DynamicReference<T> dynamic(TypeCache typeCache, @Nullable Type type,
-      @Nullable T value) {
+  static <T> DynamicReference<T> dynamic(
+      TypeCache typeCache, @Nullable Type type, @Nullable T value) {
     checkNotNull(typeCache, "typeCache");
     return dynamic(type == null ? null : typeCache.asString(type), value);
   }
@@ -60,12 +60,12 @@ public interface DynamicReference<T> {
    * Creates and returns a dynamic reference with the given type cache, type and value.
    *
    * @param typeCache the type cache
-   * @param type      the type
-   * @param value     the value
-   * @param <T>       the type of the value
+   * @param type the type
+   * @param value the value
+   * @param <T> the type of the value
    */
-  static <T> DynamicReference<T> dynamic(TypeCache typeCache, @Nullable Class<T> type,
-      @Nullable T value) {
+  static <T> DynamicReference<T> dynamic(
+      TypeCache typeCache, @Nullable Class<T> type, @Nullable T value) {
     return dynamic(typeCache, (Type) type, value);
   }
 
@@ -73,24 +73,20 @@ public interface DynamicReference<T> {
    * Creates and returns a dynamic reference with the given type cache, type and value.
    *
    * @param typeCache the type cache
-   * @param type      the type
-   * @param value     the value
-   * @param <T>       the type of the value
+   * @param type the type
+   * @param value the value
+   * @param <T> the type of the value
    */
-  static <T> DynamicReference<T> dynamic(TypeCache typeCache, @Nullable TypeLiteral<T> type,
-      @Nullable T value) {
+  static <T> DynamicReference<T> dynamic(
+      TypeCache typeCache, @Nullable TypeLiteral<T> type, @Nullable T value) {
     return dynamic(typeCache, type == null ? null : type.getType(), value);
   }
 
-  /**
-   * Returns the type.
-   */
+  /** Returns the type. */
   @Nullable
   String type();
 
-  /**
-   * Returns the value.
-   */
+  /** Returns the value. */
   @Nullable
   T value();
 }

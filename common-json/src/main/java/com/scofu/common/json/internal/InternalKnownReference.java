@@ -24,9 +24,9 @@ public class InternalKnownReference<T> implements KnownReference<T> {
   /**
    * Creates and returns an internal known reference from the given type and value.
    *
-   * @param type  the type
+   * @param type the type
    * @param value the value
-   * @param <T>   the type of the value
+   * @param <T> the type of the value
    */
   public static <T> InternalKnownReference<T> newInternalKnownReference(String type, T value) {
     return new InternalKnownReference<T>(type, value);

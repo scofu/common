@@ -9,9 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * Captures methods.
- */
+/** Captures methods. */
 public final class MethodRecorder implements AutoCloseable {
 
   private final List<Method> methods;
@@ -24,27 +22,29 @@ public final class MethodRecorder implements AutoCloseable {
   /**
    * Creates and returns a new method capturer.
    *
-   * @param type      the type
+   * @param type the type
    * @param functions the functions
-   * @param <T>       the type
+   * @param <T> the type
    */
   public static <T> MethodRecorder record(Class<T> type, Collection<Function<T, ?>> functions) {
     final var recorder = new MethodRecorder();
-    final var instance = type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type},
-        (proxy, method, args) -> {
-          if (recorder.finished) {
-            throw new UnsupportedOperationException();
-          }
-          recorder.methods.add(method);
-          return defaultValue(method.getReturnType());
-        }));
+    final var instance =
+        type.cast(
+            Proxy.newProxyInstance(
+                type.getClassLoader(),
+                new Class[] {type},
+                (proxy, method, args) -> {
+                  if (recorder.finished) {
+                    throw new UnsupportedOperationException();
+                  }
+                  recorder.methods.add(method);
+                  return defaultValue(method.getReturnType());
+                }));
     functions.forEach(function -> function.apply(instance));
     return recorder;
   }
 
-  /**
-   * Returns the result.
-   */
+  /** Returns the result. */
   public List<Method> methods() {
     return methods;
   }

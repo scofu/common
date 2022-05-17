@@ -22,9 +22,9 @@ public class InternalDynamicReference<T> implements DynamicReference<T> {
   /**
    * Creates and returns an internal dynamic reference from the given type and value.
    *
-   * @param type  the type
+   * @param type the type
    * @param value the value
-   * @param <T>   the type of the value
+   * @param <T> the type of the value
    */
   public static <T> InternalDynamicReference<T> newInternalDynamicReference(String type, T value) {
     return new InternalDynamicReference<T>(type, value);

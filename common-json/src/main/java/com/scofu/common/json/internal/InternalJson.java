@@ -12,9 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import javax.inject.Inject;
 
-/**
- * Internal json.
- */
+/** Internal json. */
 @SuppressWarnings("unchecked")
 public final class InternalJson implements Json {
 

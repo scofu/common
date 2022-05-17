@@ -236,7 +236,7 @@ final class InternalLazyFactory implements LazyFactory {
     }
 
     enum Type {
-      GETTER, OPTIONAL_GETTER, SETTER, INCREMENTER, DECREMENTER;
+      GETTER, OPTIONAL_GETTER, SETTER, INCREMENTER, DECREMENTER
     }
   }
 

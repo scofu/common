@@ -9,9 +9,7 @@ import com.scofu.common.inject.AbstractFeatureModule;
 import com.scofu.common.json.Json;
 import com.scofu.common.json.TypeCache;
 
-/**
- * Internal json module. Binds common adapters.
- */
+/** Internal json module. Binds common adapters. */
 public class InternalJsonModule extends AbstractFeatureModule {
 
   @Override

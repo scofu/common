@@ -41,5 +41,4 @@ final class InternalTypeCache implements TypeCache {
   private String toString(Type typeLiteral) {
     return MoreTypes.typeToString(typeLiteral);
   }
-
 }
