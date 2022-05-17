@@ -4,9 +4,7 @@ import gradle.kotlin.dsl.accessors._30870a47e380c7c13eee96805f88c56d.assemble
 import gradle.kotlin.dsl.accessors._30870a47e380c7c13eee96805f88c56d.bukkit
 import gradle.kotlin.dsl.accessors._30870a47e380c7c13eee96805f88c56d.publish
 import gradle.kotlin.dsl.accessors._30870a47e380c7c13eee96805f88c56d.reobfJar
-import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.invoke
-import org.gradle.kotlin.dsl.the
 
 plugins {
     id("base-conventions")

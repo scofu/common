@@ -1,8 +1,6 @@
 import com.scofu.common.build.AppExtension
 import gradle.kotlin.dsl.accessors._b2c295abbe9e2717a9a30e19a474d207.bungee
 import gradle.kotlin.dsl.accessors._b2c295abbe9e2717a9a30e19a474d207.compileOnly
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.the
 
 plugins {
     id("base-conventions")

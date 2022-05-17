@@ -2,7 +2,6 @@ import com.scofu.common.build.AppExtension
 import com.scofu.common.build.AppPlugin
 import com.scofu.common.build.AppShadowing
 import org.gradle.kotlin.dsl.*
-import kotlin.collections.emptyList
 import kotlin.collections.filter
 import kotlin.collections.flatMap
 import kotlin.collections.map
@@ -36,7 +35,7 @@ dependencies {
 checkstyle {
     toolVersion = "10.2-SNAPSHOT"
     config =
-        resources.text.fromUri(uri("https://raw.githubusercontent.com/checkstyle/checkstyle/8f6e6f341450b5de264b5fd67d0777fbeaaee58a/src/main/resources/google_checks.xml"))
+            resources.text.fromUri(uri("https://raw.githubusercontent.com/checkstyle/checkstyle/8f6e6f341450b5de264b5fd67d0777fbeaaee58a/src/main/resources/google_checks.xml"))
     println(configFile)
     maxWarnings = 0
 }
@@ -79,7 +78,7 @@ tasks {
     }
 
     jar {
-        val app = project.the<AppExtension>();
+        val app = project.the<AppExtension>()
         if (app.mainClass.isPresent) {
             manifest {
                 attributes["Specification-Title"] = project.group
@@ -90,37 +89,37 @@ tasks {
         }
         doFirst {
             val exclusions =
-                if (app.skipExclusion.get()) {
-                    emptyList<String>()
-                } else {
-                    configurations.runtimeClasspath.get().resolvedConfiguration.resolvedArtifacts
-                        .filter { it.moduleVersion.id.group.startsWith("com.scofu") }
-                        .map { it.file.name }
-                }
+                    if (app.skipExclusion.get()) {
+                        emptyList<String>()
+                    } else {
+                        configurations.runtimeClasspath.get().resolvedConfiguration.resolvedArtifacts
+                                .filter { it.moduleVersion.id.group.startsWith("com.scofu") }
+                                .map { it.file.name }
+                    }
             when (app.shadow.get()) {
                 AppShadowing.FULL -> {
                     duplicatesStrategy = DuplicatesStrategy.WARN
 
                     val filteredClasspath = configurations.runtimeClasspath.get()
-                        .filter { !exclusions.contains(it.name) }
-                        .map { if (it.isDirectory) it else if (it.exists()) zipTree(it) else it }
+                            .filter { !exclusions.contains(it.name) }
+                            .map { if (it.isDirectory) it else if (it.exists()) zipTree(it) else it }
                     from(filteredClasspath)
                 }
                 AppShadowing.FIRST_LEVEL -> {
                     duplicatesStrategy = DuplicatesStrategy.WARN
 
                     val firstLevelDependencies =
-                        configurations.runtimeClasspath.get().resolvedConfiguration.firstLevelModuleDependencies
-                            .filter { !it.module.id.group.startsWith("com.scofu") }
-                            .flatMap { it.allModuleArtifacts }
-                            .map { it.file.name }
+                            configurations.runtimeClasspath.get().resolvedConfiguration.firstLevelModuleDependencies
+                                    .filter { !it.module.id.group.startsWith("com.scofu") }
+                                    .flatMap { it.allModuleArtifacts }
+                                    .map { it.file.name }
 
                     println("${project.name}-fld: ${firstLevelDependencies}")
 
                     val filteredClasspath = configurations.runtimeClasspath.get()
-                        .filter { !exclusions.contains(it.name) }
-                        .filter { firstLevelDependencies.contains(it.name) }
-                        .map { if (it.isDirectory) it else if (it.exists()) zipTree(it) else it }
+                            .filter { !exclusions.contains(it.name) }
+                            .filter { firstLevelDependencies.contains(it.name) }
+                            .map { if (it.isDirectory) it else if (it.exists()) zipTree(it) else it }
 
                     from(filteredClasspath)
                 }
