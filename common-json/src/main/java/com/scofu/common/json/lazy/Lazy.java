@@ -7,4 +7,7 @@ public interface Lazy {
 
   /** Returns the internal json representation. */
   Any any();
+
+  /** Returns the real class. */
+  Class<?> realClass();
 }
