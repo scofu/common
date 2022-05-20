@@ -2,6 +2,7 @@ package com.scofu.common;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -51,7 +52,7 @@ public interface Expansion<T> {
   /**
    * Creates and returns a new lazy expansion with the given supplier.
    *
-   * @param supplier the vsupplieralue
+   * @param supplier the supplier
    * @param <T> the type of the value
    */
   static <T> Expansion<T> lazy(Supplier<T> supplier) {
@@ -82,6 +83,21 @@ public interface Expansion<T> {
     public Optional get() {
       return Optional.empty();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+      return obj instanceof Expansion<?> expansion && Objects.equals(get(), expansion.get());
+    }
+
+    @Override
+    public int hashCode() {
+      return get().hashCode();
+    }
+
+    @Override
+    public String toString() {
+      return "Expansion.empty";
+    }
   }
 
   /**
@@ -101,6 +117,21 @@ public interface Expansion<T> {
     public Optional<T> get() {
       return value;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+      return obj instanceof Expansion<?> expansion && Objects.equals(get(), expansion.get());
+    }
+
+    @Override
+    public int hashCode() {
+      return get().hashCode();
+    }
+
+    @Override
+    public String toString() {
+      return "Expansion.Value[%s]".formatted(value);
+    }
   }
 
   /**
@@ -119,6 +150,21 @@ public interface Expansion<T> {
     @Override
     public Optional<T> get() {
       return Optional.of(supplier.get());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return obj instanceof Expansion<?> expansion && Objects.equals(get(), expansion.get());
+    }
+
+    @Override
+    public int hashCode() {
+      return get().hashCode();
+    }
+
+    @Override
+    public String toString() {
+      return "Expansion.Lazy[%s]".formatted(supplier);
     }
   }
 }
