@@ -3,6 +3,7 @@ package com.scofu.common;
 import static com.scofu.common.ExpansionMap.expansionMap;
 import static com.scofu.common.Identifier.identifier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -51,6 +52,14 @@ public class ExpansionTest {
 
     final var foo = absolute.expand(STRING_IDENTIFIER).orElseThrow();
     assertEquals("foo!", foo);
+  }
+
+  @Test
+  public void testBuilder() {
+    final var foo = Expansion.value("foo");
+    assertEquals("foo", foo.get().orElseThrow());
+    assertEquals(foo, foo.toBuilder().build());
+    assertNotEquals(foo, foo.toBuilder().to("bar"));
   }
 
   private record Absolute(ExpansionMap expansions) implements Expandable<Absolute> {
