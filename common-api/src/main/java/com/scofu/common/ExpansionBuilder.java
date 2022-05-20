@@ -50,6 +50,16 @@ public class ExpansionBuilder<T, S>
   /** Constructs a new expansion builder. */
   public ExpansionBuilder() {}
 
+  @Override
+  protected void initializeFrom(Expansion<T> expansion) {
+    this.expansion = expansion;
+  }
+
+  @Override
+  public Expansion<T> build() {
+    return require(expansion, "expansion");
+  }
+
   /**
    * Binds the expansion to the given value.
    *
@@ -84,10 +94,5 @@ public class ExpansionBuilder<T, S>
   public S toSupplier(Supplier<T> supplier) {
     this.expansion = Expansion.lazy(supplier);
     return end();
-  }
-
-  @Override
-  public Expansion<T> build() {
-    return require(expansion, "expansion");
   }
 }
