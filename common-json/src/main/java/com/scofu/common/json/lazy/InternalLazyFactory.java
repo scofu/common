@@ -14,6 +14,7 @@ import com.jsoniter.any.Any;
 import com.jsoniter.spi.TypeLiteral;
 import com.scofu.common.json.Json;
 import com.scofu.common.json.lazy.InternalLazyFactory.Binding.Type;
+import com.scofu.common.reflect.MethodRecorder;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;

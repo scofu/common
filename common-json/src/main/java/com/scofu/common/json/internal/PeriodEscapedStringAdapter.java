@@ -2,9 +2,9 @@ package com.scofu.common.json.internal;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
+import com.scofu.common.PeriodEscapedString;
+import com.scofu.common.Periods;
 import com.scofu.common.json.Adapter;
-import com.scofu.common.json.PeriodEscapedString;
-import com.scofu.common.json.Periods;
 import java.io.IOException;
 import java.lang.reflect.Type;
 

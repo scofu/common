@@ -5,9 +5,9 @@ import static com.scofu.common.json.KnownReference.known;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import com.jsoniter.spi.TypeLiteral;
+import com.scofu.common.Periods;
 import com.scofu.common.json.Adapter;
 import com.scofu.common.json.KnownReference;
-import com.scofu.common.json.Periods;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
