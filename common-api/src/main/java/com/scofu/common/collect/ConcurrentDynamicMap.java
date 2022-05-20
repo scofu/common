@@ -2,6 +2,7 @@ package com.scofu.common.collect;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -52,5 +53,15 @@ public class ConcurrentDynamicMap<K, V extends Predicate<K>> implements DynamicM
   public Optional<V> invalidate(K key) {
     checkNotNull(key, "key");
     return Optional.ofNullable(values.remove(key));
+  }
+
+  @Override
+  public Collection<V> unmappedValues() {
+    return Set.copyOf(unmapped);
+  }
+
+  @Override
+  public Map<K, V> mappedValues() {
+    return Map.copyOf(values);
   }
 }

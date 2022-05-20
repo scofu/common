@@ -1,5 +1,7 @@
 package com.scofu.common.collect;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -31,4 +33,10 @@ public interface DynamicMap<K, V extends Predicate<K>> {
    * @param key the key
    */
   Optional<V> invalidate(K key);
+
+  /** Returns a copy of the unmapped values. */
+  Collection<V> unmappedValues();
+
+  /** Returns a copy of the mapped values. */
+  Map<K, V> mappedValues();
 }
