@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
@@ -81,11 +82,12 @@ public class BuilderTest {
     private String first;
     private String last;
 
-    public NameBuilder(@Nullable Name from, @Nullable R parent, @Nullable Consumer<Name> consumer) {
+    public NameBuilder(
+        @Nullable Name from, @Nullable Supplier<R> parent, @Nullable Consumer<Name> consumer) {
       super(from, parent, consumer);
     }
 
-    public NameBuilder(@Nullable R parent, @Nullable Consumer<Name> consumer) {
+    public NameBuilder(@Nullable Supplier<R> parent, @Nullable Consumer<Name> consumer) {
       super(parent, consumer);
     }
 
@@ -128,11 +130,11 @@ public class BuilderTest {
     private String mood;
 
     public PersonBuilder(
-        @Nullable Person from, @Nullable R parent, @Nullable Consumer<Person> consumer) {
+        @Nullable Person from, @Nullable Supplier<R> parent, @Nullable Consumer<Person> consumer) {
       super(from, parent, consumer);
     }
 
-    public PersonBuilder(@Nullable R parent, @Nullable Consumer<Person> consumer) {
+    public PersonBuilder(@Nullable Supplier<R> parent, @Nullable Consumer<Person> consumer) {
       super(parent, consumer);
     }
 
@@ -150,7 +152,7 @@ public class BuilderTest {
     }
 
     public NameBuilder<PersonBuilder<R>> name() {
-      return new NameBuilder<>(name, this, name -> this.name = name);
+      return new NameBuilder<>(name, () -> this, name -> this.name = name);
     }
 
     public PersonBuilder<R> age(Integer age) {

@@ -24,7 +24,9 @@ public class ExpansionBuilder<T, S>
    * @param consumer the consumer
    */
   public ExpansionBuilder(
-      @Nullable Expansion<T> from, @Nullable S parent, @Nullable Consumer<Expansion<T>> consumer) {
+      @Nullable Expansion<T> from,
+      @Nullable Supplier<S> parent,
+      @Nullable Consumer<Expansion<T>> consumer) {
     super(from, parent, consumer);
   }
 
@@ -34,7 +36,7 @@ public class ExpansionBuilder<T, S>
    * @param parent the parent
    * @param consumer the consumer
    */
-  public ExpansionBuilder(@Nullable S parent, @Nullable Consumer<Expansion<T>> consumer) {
+  public ExpansionBuilder(@Nullable Supplier<S> parent, @Nullable Consumer<Expansion<T>> consumer) {
     super(parent, consumer);
   }
 

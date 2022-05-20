@@ -37,6 +37,7 @@ public interface Expandable<T extends Expandable<T>> {
   default <V> ExpansionBuilder<V, T> map(Identifier<V> identifier) {
     checkNotNull(identifier, "identifier");
     //noinspection unchecked
-    return new ExpansionBuilder<>((T) this, expansion -> expansions().put(identifier, expansion));
+    return new ExpansionBuilder<>(
+        () -> (T) this, expansion -> expansions().put(identifier, expansion));
   }
 }

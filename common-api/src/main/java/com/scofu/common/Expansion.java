@@ -3,6 +3,7 @@ package com.scofu.common;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 /**
@@ -68,7 +69,8 @@ public interface Expansion<T> {
 
   /** Returns a new builder from this. */
   default ExpansionBuilder<T, Expansion<T>> toBuilder() {
-    return new ExpansionBuilder<>(this);
+    final var result = new AtomicReference<Expansion<T>>();
+    return new ExpansionBuilder<>(this, result::get, result::set);
   }
 
   /** Empty expansion. */
