@@ -1,4 +1,4 @@
-package com.scofu.common.collect;
+package com.scofu.common.reflect;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
