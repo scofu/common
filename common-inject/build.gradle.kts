@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    api(project(":common-api"))
     api("com.google.inject:guice:5.1.0")
 }
 
