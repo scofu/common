@@ -3,5 +3,5 @@ plugins {
 }
 
 app {
-    mainClass.set("com.scofu.egg.Egg")
+    mainClass.set("com.scofu.common.misc.PaperClasspathExractor")
 }
