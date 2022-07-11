@@ -14,7 +14,7 @@ plugins {
 }
 
 dependencies {
-    paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+    paperDevBundle("1.19-R0.1-SNAPSHOT")
 }
 
 val app = the<AppExtension>()
@@ -22,7 +22,7 @@ val app = the<AppExtension>()
 bukkit {
     version = project.version as String
     description = project.description
-    apiVersion = "1.18"
+    apiVersion = "1.19"
     authors = listOf("jesper@scofu.com")
     main = app.mainClass.getOrElse(".")
 }
